@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)http://127.0.0.1:5500/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>University Management System · Manager Dashboard · 3 Groups + Grades</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        /* ==== base & same style as original, with additions for grade panel ==== */
+        body {
+            margin: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            background: #f4f8fc;
+        }
+
+        header {
+            background: #0f2b5c;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 24px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .container {
+            display: flex;
+        }
+
+        nav {
+            width: 240px;
+            background: #0a1a36;
+            min-height: 100vh;
+            color: #e2e8f0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.06);
+        }
+
+        nav h3 {
+            text-align: center;
+            padding: 22px 16px;
+            border-bottom: 1px solid #1e3a5e;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        nav a {
+            display: block;
+            padding: 14px 24px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-bottom: 1px solid #1e3a5e;
+            font-weight: 450;
+            transition: 0.2s;
+        }
+
+        nav a:hover {
+            background: #1e3f70;
+            color: white;
+            padding-left: 30px;
+        }
+
+        main {
+            flex: 1;
+            padding: 24px 32px;
+            background: #f4f8fc;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 20, 40, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        h2, h3 {
+            color: #0f2b5c;
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table th, table td {
+            border: 1px solid #e9edf4;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        table th {
+            background: #0f2b5c;
+            color: white;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        input, select, button {
+            padding: 12px 14px;
+            margin: 6px 0;
+            width: 100%;
+            border: 1px solid #d1d9e6;
+            border-radius: 14px;
+            font-size: 14px;
+            box-sizing: border-box;
+            background: #fafcff;
+        }
+
+        button {
+            background: #1f4a8a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        button:hover {
+            background: #0e3a6f;
+            box-shadow: 0 8px 14px rgba(31, 74, 138, 0.25);
+        }
+
+        .pagination-buttons {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .pagination-buttons button {
+            width: auto;
+            margin: 0 8px;
+            padding: 10px 22px;
+            background: white;
+            color: #0f2b5c;
+            border: 1.5px solid #0f2b5c;
+        }
+
+        .pagination-buttons button:hover {
+            background: #0f2b5c;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #b02a37;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+        }
+
+        .group-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 13px;
+            color: white;
+            letter-spacing: 0.3px;
+        }
+
+        .group1 {
+            background: #2a6f97;
+        }
+
+        .group2 {
+            background: #3a7ca5;
+        }
+
+        .group3 {
+            background: #4a89b3;
+        }
+
+        .schedule-chip {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f0e6b2;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #3d3d1f;
+            margin-left: 8px;
+        }
+
+        /* group shower panel */
+        .group-shower {
+            background: linear-gradient(145deg, #eef7ff, #e2ecf7);
+            border-left: 8px solid #1f4a8a;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin: 20px 0 10px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .group-shower-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f2b5c;
+            border: 3px solid #1f4a8a;
+        }
+
+        .group-shower-details {
+            flex: 1;
+        }
+
+        .group-shower-title {
+            font-size: 15px;
+            color: #1f4a8a;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .group-shower-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0a1a36;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .group-shower-schedule {
+            background: #0f2b5c;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* manager spotlight */
+        .manager-spotlight {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            background: linear-gradient(145deg, #ffffff, #f5faff);
+            padding: 24px 28px;
+            border-radius: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 6px 18px rgba(15, 43, 92, 0.08);
+            border: 1px solid rgba(31, 74, 138, 0.12);
+        }
+
+        .manager-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 10px 20px rgba(15, 43, 92, 0.2);
+            background: #e6eff9;
+        }
+
+        .manager-info {
+            flex: 1;
+        }
+
+        .manager-info h1 {
+            margin: 0 0 6px 0;
+            font-size: 26px;
+            color: #0a1a36;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .manager-badge {
+            background: #1f4a8a;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dashboard-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .stat-chip {
+            background: #eef4ff;
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: #0f2b5c;
+            font-weight: 500;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #dce3ec;
+            margin: 24px 0;
+        }
+
+        /* grade specific */
+        .grade-chip {
+            background: #f0b27a;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #2d1b0e;
+        }
+
+        .grade-a {
+            background: #28a745;
+            color: white;
+        }
+
+        .grade-b {
+            background: #5e9b8a;
+            color: white;
+        }
+
+        .grade-c {
+            background: #d68b4a;
+            color: white;
+        }
+
+        .grade-d {
+            background: #b33f2f;
+            color: white;
+        }
+
+        .grade-f {
+            background: #721c24;
+            color: white;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .small-btn {
+            width: auto;
+            padding: 6px 16px;
+        }
+
+        .grade-history-icon {
+            font-size: 13px;
+            background: #4b6584;
+            color: white;
+            border-radius: 20px;
+            padding: 3px 12px;
+            cursor: pointer;
+        }
+    </style>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</head>
+
+<body>
+
+<header>
+    🎓 University Management System 
+</header>
+
+<div class="container">
+
+    <nav>
+        <h3>📋 EXECUTIVE MENU</h3>
+        <a href="http://127.0.0.1:5500/index.html#">📊 Dashboard</a>
+        <a href="http://127.0.0.1:5500/index.html#">🧑‍🎓 Students</a>
+        <a href="http://127.0.0.1:5500/index.html#">📘 Courses</a>
+        <a href="http://127.0.0.1:5500/index.html#">👩‍🏫 Lecturers</a>
+        <a href="http://127.0.0.1:5500/index.html#"><strong>📈 Results &amp; Grades</strong></a>
+        <a href="http://127.0.0.1:5500/index.html#">⚙️ Settings</a>
+    </nav>
+
+    <main>
+
+        <!-- MANAGER PROFILE -->
+        <div class="manager-spotlight">
+            <img class="manager-avatar" src="./University Management System · Manager Dashboard · 3 Groups + Grades_files/pexels-photo-3778876.jpeg" alt="University Manager – Portrait" onerror="this.src=&#39;https://ui-avatars.com/api/?name=Dr.+Mht+lode&amp;size=80&amp;background=1f4a8a&amp;color=fff&amp;bold=true&#39;;">
+            <div class="manager-info">
+                <h1>👔 Dr. Mht lode</h1>
+                <div class="manager-badge">🏛️ EXECUTIVE DIRECTOR · 3×50 STUDENT GROUPS</div>
+                <div class="dashboard-stats">
+                    <span class="stat-chip">🎯 Strategic lead</span>
+                    <span class="stat-chip">📅 6+ years</span>
+                    <span class="stat-chip">⭐ since 2020</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- OVERVIEW CARD -->
+        <div class="card" style="padding: 20px 28px;">
+            <h2 style="display: flex; align-items: center; gap: 8px;">📌 Institutional Overview · 3 Balanced Groups</h2>
+            <div style="display: flex; gap: 40px; flex-wrap: wrap; margin-top: 6px;">
+                <p style="font-size: 17px; margin: 8px 0;">🧑‍🎓 Total Students: <b style="background: #eef2fa; padding: 6px 18px; border-radius: 40px; color: #0a1a36;" id="totalStudents"></b></p>
+                <p style="font-size: 17px; margin: 8px 0;">📚 Total Courses: <b style="background: #eef2fa; padding: 6px 18px; border-radius: 40px; color: #0a1a36;" id="totalCourses"></b></p>
+                <p style="font-size: 17px; margin: 8px 0;">👩‍🏫 Total Lecturers: <b style="background: #eef2fa; padding: 6px 18px; border-radius: 40px; color: #0a1a36;" id="totalLecturers"></b></p>
+            </div>
+            <div style="display: flex; gap: 30px; margin-top: 16px; background: #eef2fa; padding: 12px 20px; border-radius: 60px;">
+                <span style="font-weight: 600; color: #0a1a36;">📌 GROUP DISTRIBUTION :</span>
+                <span style="background: #2a6f97; color: white; padding: 4px 20px; border-radius: 30px;" id="group1Count">Group 1: 50</span>
+                <span style="background: #3a7ca5; color: white; padding: 4px 20px; border-radius: 30px;" id="group2Count">Group 2: 50</span>
+                <span style="background: #4a89b3; color: white; padding: 4px 20px; border-radius: 30px;" id="group3Count">Group 3: 50</span>
+            </div>
+            <div style="margin-top: 18px; font-size: 15px; background: #faf3e0; padding: 12px 20px; border-radius: 40px; color: #2c3e50;">
+                ⏰ <strong>Group class schedules:</strong> Group 1 · 8:00 – 11:00 &nbsp;&nbsp;|&nbsp;&nbsp; Group 2 · 14:00 – 17:00 &nbsp;&nbsp;|&nbsp;&nbsp; Group 3 · 18:00 – 21:00
+            </div>
+        </div>
+
+        <!-- ========== STUDENT CARD (unchanged, no grade column) ========== -->
+        <div class="card">
+            <h2>🧑‍🎓 Student Management · 3 FIXED GROUPS (1,2,3) · 50 EACH</h2>
+
+            <input type="text" id="addName" placeholder="Student Full Name">
+            <input type="text" id="addRegNo" placeholder="Registration Number (e.g., 2025/30001)">
+            <select id="addCourse">
+                <option value="">Select Programme</option>
+            </select>
+            <select id="addGroupSelect" style="margin: 8px 0; background: #f0f7fc;">
+                <option value="1">🎯 Group 1 (seats available) · 8:00–11:00</option>
+                <option value="2">🎯 Group 2 (seats available) · 14:00–17:00</option>
+                <option value="3">🎯 Group 3 (seats available) · 18:00–21:00</option>
+            </select>
+            <button onclick="addStudent()">➕ Add Student to Group</button>
+
+            <table id="studentTable">
+                <tbody><tr>
+                    <th>Name</th>
+                    <th>Reg No</th>
+                    <th>Course</th>
+                    <th>Action</th>
+                </tr>
+            </tbody></table>
+
+            <div class="pagination-buttons">
+                <button onclick="prevPage()">◀ Previous</button>
+                <button onclick="nextPage()">Next ▶</button>
+            </div>
+            <hr>
+            <h3>🔗 Join Course — Select Reg No, Course, AND Group</h3>
+            <div id="groupShowerPanel" class="group-shower" style="display: none;">
+                <div class="group-shower-avatar" id="showerAvatar">👤</div>
+                <div class="group-shower-details">
+                    <div class="group-shower-title">🔍 STUDENT FOUND</div>
+                    <div class="group-shower-name" id="showerName"></div>
+                    <div style="margin-top: 8px; display: flex; gap: 12px; align-items: center;" id="showerMeta"></div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 16px;">
+                <input type="text" id="studentReg" placeholder="Student Reg No" style="flex:1.5;" onkeyup="showStudentGroupShower()">
+                <select id="joinCourse" style="flex:1.8;">
+                    <option value="">Select Course</option>
+                </select>
+                <select id="joinGroupSelect" style="flex:1.2; background: #f0f7fc;">
+                    <option value="1">🎯 Group 1 · 8:00–11:00</option>
+                    <option value="2">🎯 Group 2 · 14:00–17:00</option>
+                    <option value="3">🎯 Group 3 · 18:00–21:00</option>
+                </select>
+                <button onclick="joinCourseWithGroup()" style="flex:1; background: #1f4a8a;">✅ Enroll</button>
+            </div>
+            <p style="margin: 12px 0 0 0; font-size: 14px; color: #2c5a7a;">
+                <strong>📋 Group selection applied:</strong> enrollment records group &amp; schedule.
+            </p>
+            <table id="joinedTable">
+                <tbody><tr>
+                    <th>Reg No</th>
+                    <th>Course</th>
+                    <th>Group &amp; Schedule</th>
+                    <th>Timestamp</th>
+                </tr>
+            </tbody></table>
+        </div>
+
+        <!-- ========== NEW GRADE / RESULTS CARD ========== -->
+        <div class="card" style="border-left: 10px solid #2e7d5e;">
+            <h2 style="display: flex; align-items: center; gap: 8px;">📈 RESULTS &amp; GRADE BOOK · Per Student &amp; Course</h2>
+            <p style="margin-bottom: 18px; background: #e3f2ec; padding: 10px 20px; border-radius: 40px;">✏️ Add grade for a specific student + course. Choose group to verify schedule.</p>
+
+            <div class="flex-row" style="align-items: flex-end; gap: 16px;">
+                <div style="flex: 2;">
+                    <label style="font-weight: 600; font-size: 13px;">👤 Student Reg No</label>
+                    <input type="text" id="gradeRegNo" placeholder="e.g. 2025/30001" value="">
+                </div>
+                <div style="flex: 2;">
+                    <label style="font-weight: 600; font-size: 13px;">📖 Select Course</label>
+                    <select id="gradeCourseSelect">
+                        <option value="">-- Course --</option>
+                    </select>
+                </div>
+                <div style="flex: 1.2;">
+                    <label style="font-weight: 600; font-size: 13px;">🎯 Group (schedule)</label>
+                    <select id="gradeGroupSelect" style="background: #f0f7fc;">
+                        <option value="1">Group 1 (8:00–11:00)</option>
+                        <option value="2">Group 2 (14:00–17:00)</option>
+                        <option value="3">Group 3 (18:00–21:00)</option>
+                    </select>
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-weight: 600; font-size: 13px;">🎓 Grade (A-F)</label>
+                    <select id="gradeLetterSelect">
+                        <option value="A">A (90-100)</option>
+                        <option value="B">B (80-89)</option>
+                        <option value="C">C (70-79)</option>
+                        <option value="D">D (60-69)</option>
+                        <option value="F">F (0-59)</option>
+                    </select>
+                </div>
+                <div style="flex: 0.8;">
+                    <button onclick="addGradeResult()" style="background: #2e7d5e; padding: 12px 24px;">➕ Record Grade</button>
+                </div>
+            </div>
+
+            <!-- Grade Table / Result List -->
+            <table id="gradeResultTable" style="margin-top: 28px;">
+                <tbody><tr>
+                    <th>Reg No</th>
+                    <th>Student Name</th>
+                    <th>Course</th>
+                    <th>Group / Schedule</th>
+                    <th>Grade</th>
+                    <th>Recorded</th>
+                    <th>Action</th>
+                </tr>
+            </tbody></table>
+            <p style="font-size: 14px; color: #1f4a8a; margin-top: 8px;">⭐ Grade points: A=4.0, B=3.0, C=2.0, D=1.0, F=0.0</p>
+        </div>
+
+        <!-- Courses Card -->
+        <div class="card">
+            <h2>📘 Course Catalog · Add / View</h2>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+                <input type="text" id="newCourseName" placeholder="New course name (e.g., Data Science)" style="flex: 2;">
+                <input type="text" id="newCourseCode" placeholder="Course code (e.g., DS201)" style="flex: 1;">
+                <button onclick="addCourse()" style="flex: 0.5; background: #2e7d32;">➕ Add Course</button>
+            </div>
+            <table id="courseTable">
+                <tbody><tr>
+                    <th>Course Name</th>
+                    <th>Code</th>
+                    <th>Action</th>
+                </tr>
+            </tbody></table>
+        </div>
+
+        <!-- Lecturers Card -->
+        <div class="card">
+            <h2>👩‍🏫 Faculty &amp; Lecturers · Add / View</h2>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+                <input type="text" id="newLecturerName" placeholder="Lecturer full name (e.g., Dr. Alice)" style="flex: 2;">
+                <select id="newLecturerDept" style="flex: 1.5;">
+                    <option value="">Select Department</option>
+                </select>
+                <button onclick="addLecturer()" style="flex: 0.6; background: #8a2be2;">➕ Add Lecturer</button>
+            </div>
+            <table id="lecturerTable">
+                <tbody><tr>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Action</th>
+                </tr>
+            </tbody></table>
+        </div>
+    </main>
+</div>
+
+<script>
+    // ========== GLOBAL DATA STORES ==========
+    const allStudents = [];
+    const initialCourses = ["Computer Science", "Information Technology", "Software Engineering", "Business Administration", "OOP"];
+
+    // Generate exactly 150 students – group 1: 0-49, group2: 50-99, group3: 100-149
+    for (let i = 1; i <= 150; i++) {
+        let group;
+        if (i <= 50) group = 1;
+        else if (i <= 100) group = 2;
+        else group = 3;
+
+        allStudents.push({
+            name: "Student " + i,
+            regNo: "2025/" + (30000 + i),
+            course: initialCourses[i % 5],
+            group: group
+        });
+    }
+
+    // Courses
+    let allCourses = [
+        { name: "Computer Science", code: "CS101" },
+        { name: "Information Technology", code: "IT102" },
+        { name: "Software Engineering", code: "SE103" },
+        { name: "Business Administration", code: "BA104" },
+        { name: "OOP", code: "OOP105" }
+    ];
+
+    // Lecturers
+    let allLecturers = [
+        { name: "Dr. Jean Claude", dept: "Computer Science" },
+        { name: "Dr. Aline Uwase", dept: "Information Technology" },
+        { name: "Dr. Eric Ndayisenga", dept: "Software Engineering" },
+        { name: "Dr. Diane Mukamana", dept: "Business Administration" },
+        { name: "Dr. Patrick Habimana", dept: "OOP" }
+    ];
+
+    // Joined courses tracking (enrollments)
+    let joinedCourses = [];
+
+    // ========== NEW: GRADE RESULTS ARRAY ==========
+    let gradeResults = [];
+
+    // Helper: schedule
+    function getGroupSchedule(group) {
+        if (group === 1) return "8:00 – 11:00";
+        if (group === 2) return "14:00 – 17:00";
+        if (group === 3) return "18:00 – 21:00";
+        return "";
+    }
+
+    // Grade point / style helper
+    function getGradeClass(grade) {
+        switch (grade) {
+            case 'A': return 'grade-a';
+            case 'B': return 'grade-b';
+            case 'C': return 'grade-c';
+            case 'D': return 'grade-d';
+            case 'F': return 'grade-f';
+            default: return '';
+        }
+    }
+
+    // ========== GROUP SHOWER ==========
+    function showStudentGroupShower() {
+        const regNo = document.getElementById("studentReg").value.trim();
+        const showerPanel = document.getElementById("groupShowerPanel");
+        const showerName = document.getElementById("showerName");
+        const showerMeta = document.getElementById("showerMeta");
+        const showerAvatar = document.getElementById("showerAvatar");
+
+        if (regNo === "") {
+            showerPanel.style.display = "none";
+            return;
+        }
+
+        const student = allStudents.find(s => s.regNo === regNo);
+        if (!student) {
+            showerPanel.style.display = "flex";
+            showerName.innerHTML = `<span style="color: #b02a37;">❌ Student not found: ${regNo}</span>`;
+            showerMeta.innerHTML = "";
+            showerAvatar.innerText = "❓";
+            return;
+        }
+
+        showerPanel.style.display = "flex";
+        showerAvatar.innerText = student.name.charAt(0);
+        showerName.innerHTML = `${student.name} <span class="group-badge group${student.group}" style="font-size: 16px; padding: 8px 22px;">Group ${student.group}</span>`;
+
+        const schedule = getGroupSchedule(student.group);
+        showerMeta.innerHTML = `
+            <span style="background: #0f2b5c; color: white; padding: 8px 22px; border-radius: 40px; font-weight: 600;">
+                ⏰ ${schedule}
+            </span>
+            <span style="color: #1f4a8a; font-weight: 500;">
+                📋 ${student.course}
+            </span>
+        `;
+    }
+
+    // ========== DASHBOARD UPDATE ==========
+    function updateDashboard() {
+        document.getElementById("totalStudents").innerText = allStudents.length;
+        document.getElementById("totalCourses").innerText = allCourses.length;
+        document.getElementById("totalLecturers").innerText = allLecturers.length;
+
+        let g1 = allStudents.filter(s => s.group === 1).length;
+        let g2 = allStudents.filter(s => s.group === 2).length;
+        let g3 = allStudents.filter(s => s.group === 3).length;
+
+        document.getElementById("group1Count").innerHTML = `🥇 Group 1: ${g1}`;
+        document.getElementById("group2Count").innerHTML = `🥈 Group 2: ${g2}`;
+        document.getElementById("group3Count").innerHTML = `🥉 Group 3: ${g3}`;
+
+        const groupSelect = document.getElementById("addGroupSelect");
+        if (groupSelect) {
+            groupSelect.options[0].text = `🎯 Group 1 (${g1}/50 seats filled) · 8:00–11:00` + (g1 >= 50 ? ' · FULL' : '');
+            groupSelect.options[1].text = `🎯 Group 2 (${g2}/50 seats filled) · 14:00–17:00` + (g2 >= 50 ? ' · FULL' : '');
+            groupSelect.options[2].text = `🎯 Group 3 (${g3}/50 seats filled) · 18:00–21:00` + (g3 >= 50 ? ' · FULL' : '');
+            groupSelect.options[0].disabled = g1 >= 50;
+            groupSelect.options[1].disabled = g2 >= 50;
+            groupSelect.options[2].disabled = g3 >= 50;
+        }
+    }
+
+    // Refresh course dropdowns
+    function refreshCourseDropdowns() {
+        const addCourseSelect = document.getElementById("addCourse");
+        const joinCourseSelect = document.getElementById("joinCourse");
+        const lecturerDeptSelect = document.getElementById("newLecturerDept");
+        const gradeCourseSelect = document.getElementById("gradeCourseSelect");
+
+        [addCourseSelect, joinCourseSelect, lecturerDeptSelect, gradeCourseSelect].forEach(select => {
+            if (!select) return;
+            select.innerHTML = "";
+            const defaultOpt = document.createElement("option");
+            defaultOpt.value = "";
+            defaultOpt.textContent = select.id === "newLecturerDept" ? "Select Department" : "Select Programme";
+            select.appendChild(defaultOpt);
+
+            allCourses.forEach(course => {
+                const opt = document.createElement("option");
+                opt.value = course.name;
+                opt.textContent = course.name + " (" + course.code + ")";
+                select.appendChild(opt);
+            });
+        });
+    }
+
+    // --- Course table ---
+    function renderCourseTable() {
+        const table = document.getElementById("courseTable");
+        table.innerHTML = "<tr><th>Course Name</th><th>Code</th><th>Action</th></tr>";
+        allCourses.forEach((course, index) => {
+            const row = table.insertRow();
+            row.insertCell(0).innerText = course.name;
+            row.insertCell(1).innerText = course.code;
+            const delCell = row.insertCell(2);
+            const delBtn = document.createElement("button");
+            delBtn.className = "delete-btn";
+            delBtn.innerText = "🗑️ Delete";
+            delBtn.onclick = () => {
+                if (allCourses.length <= 1) { alert("Cannot delete the last course."); return; }
+                allCourses.splice(index, 1);
+                refreshCourseDropdowns();
+                renderCourseTable();
+                updateDashboard();
+            };
+            delCell.appendChild(delBtn);
+        });
+    }
+
+    // --- Lecturer table ---
+    function renderLecturerTable() {
+        const table = document.getElementById("lecturerTable");
+        table.innerHTML = "<tr><th>Name</th><th>Department</th><th>Action</th></tr>";
+        allLecturers.forEach((lecturer, index) => {
+            const row = table.insertRow();
+            row.insertCell(0).innerText = lecturer.name;
+            row.insertCell(1).innerText = lecturer.dept;
+            const delCell = row.insertCell(2);
+            const delBtn = document.createElement("button");
+            delBtn.className = "delete-btn";
+            delBtn.innerText = "🗑️ Delete";
+            delBtn.onclick = () => {
+                allLecturers.splice(index, 1);
+                renderLecturerTable();
+                updateDashboard();
+            };
+            delCell.appendChild(delBtn);
+        });
+    }
+
+    // --- Student table without group column ---
+    let currentPage = 1;
+    const rowsPerPage = 5;
+
+    function renderStudentTable() {
+        const table = document.getElementById("studentTable");
+        table.innerHTML = "<tr><th>Name</th><th>Reg No</th><th>Course</th><th>Action</th></tr>";
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+        const pageStudents = allStudents.slice(start, end);
+        pageStudents.forEach((student, index) => {
+            const row = table.insertRow();
+            row.insertCell(0).innerText = student.name;
+            row.insertCell(1).innerText = student.regNo;
+            row.insertCell(2).innerText = student.course;
+            const delCell = row.insertCell(3);
+            const delBtn = document.createElement("button");
+            delBtn.className = "delete-btn";
+            delBtn.innerText = "🗑️ Delete";
+            delBtn.onclick = () => {
+                const globalIndex = start + index;
+                allStudents.splice(globalIndex, 1);
+                if (currentPage > Math.ceil(allStudents.length / rowsPerPage)) currentPage--;
+                updateDashboard();
+                renderStudentTable();
+            };
+            delCell.appendChild(delBtn);
+        });
+    }
+
+    function nextPage() { if (currentPage < Math.ceil(allStudents.length / rowsPerPage)) { currentPage++; renderStudentTable(); } }
+    function prevPage() { if (currentPage > 1) { currentPage--; renderStudentTable(); } }
+
+    // --- Render Joined Courses ---
+    function renderJoinedTable() {
+        const table = document.getElementById("joinedTable");
+        table.innerHTML = "<tr><th>Reg No</th><th>Course</th><th>Group & Schedule</th><th>Timestamp</th></tr>";
+        joinedCourses.slice().reverse().forEach(entry => {
+            const row = table.insertRow();
+            row.insertCell(0).innerText = entry.regNo;
+            row.insertCell(1).innerText = entry.course;
+            const groupScheduleCell = row.insertCell(2);
+            const badge = document.createElement("span");
+            badge.className = `group-badge group${entry.group}`;
+            badge.innerText = `Group ${entry.group}`;
+            groupScheduleCell.appendChild(badge);
+            const scheduleSpan = document.createElement("span");
+            scheduleSpan.className = "schedule-chip";
+            scheduleSpan.innerText = entry.schedule;
+            groupScheduleCell.appendChild(scheduleSpan);
+            row.insertCell(3).innerText = entry.timestamp || new Date().toLocaleString();
+        });
+    }
+
+    //</script></body></html>
